@@ -25,7 +25,7 @@ pipeline {
         }
         stage('deploy the new code on kubernetes') { 
             steps {
-                echo "This is Deploy stage." 
+                echo "This is Deploy stagee." 
             }
         
     }
