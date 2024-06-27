@@ -25,7 +25,9 @@ pipeline {
         }
         stage('deploy the new code on kubernetes') { 
             steps {
-                echo "This is Deploy stageeeeee." 
+                script{
+                    sh 'kubectl apply -f ./kubernetes'
+                }
             }
         
     }
