@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: notejam-configmap
+data:
+  engine: django.db.backends.postgresql_psycopg2
+  host : db
+  port : "5432"

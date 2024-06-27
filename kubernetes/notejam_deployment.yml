@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notejam-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notejam-web
+  template:
+    metadata:
+      labels:
+        app: notejam-web
+    spec:
+      volumes:
+        - name: notejam-secret-volume
+          secret:
+            secretName: notejam-secret
+      containers:
+        - name: notejam-web
+          image: shubhamjangid1/notejam
+          volumeMounts:
+            - name: notejam-secret-volume
+              readOnly: true
+              mountPath: "/etc/secret-volume"
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 80
+          env:
+            - name: POSTGRES_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: notejam-secret
+                  key: postgresName
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: notejam-secret
+                  key: postgresUser
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: notejam-secret
+                  key: postgresPassword
+            - name: PGDATA
+              value: /data/pgdata
+            - name: POSTGRES_ENGINE
+              valueFrom:
+                configMapKeyRef:
+                  name: notejam-configmap
+                  key: engine
+            - name: POSTGRES_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: notejam-configmap
+                  key: host
+            - name: POSTGRES_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: notejam-configmap
+                  key: port
+          command:
+            - "/bin/sh"
+            - "-c"
+            - "./command.sh"

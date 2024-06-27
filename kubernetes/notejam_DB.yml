@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: notejam-db
+spec:
+  serviceName: db
+  selector:
+    matchLabels:
+      app: db
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      containers:
+      - name: postgresql-db
+        image: postgres
+        volumeMounts:
+        - name: postgresql-db-disk
+          mountPath: /var/lib/pgsql/data
+        ports:
+          - name: postgres
+            containerPort: 5432
+        env:
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: notejam-secret
+                  key: postgresDB
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: notejam-secret
+                  key: postgresUser
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: notejam-secret
+                  key:  postgresPassword
+  volumeClaimTemplates:
+  - metadata:
+      name: postgresql-db-disk
+    spec:
+      accessModes: [ "ReadWriteMany" ]
+      storageClassName: manual
+      resources:
+        requests:
+          storage: 2Gi
+
