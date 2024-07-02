@@ -2,6 +2,8 @@ create a pipeline in jenkins with git hooks on the repo ad provide the jenkinsfi
 
 update all the stages acc to need and change the docker hub cred and update the git repo path 
 
+update the config file with for the permission to access kubernetes
+
 provide the kube conig file in system -> envirment var  with name KUBECONFIG and the path of the file so it can access the kubernetes 
 
 run the pipeline it will deploye the code on the kubernetes cluster 
